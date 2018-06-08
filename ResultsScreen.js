@@ -12,20 +12,16 @@ class ResultsScreen extends React.Component {
   }
 
   componentWillMount() {
-    console.warn(this.state);
     const query = this.props.navigation.getParam("query");
-    console.warn("hiiii " + this.props.navigation.getParam("query"));
     fetch("http://www.xeno-canto.org/api/2/recordings?query=" + query)
       .then(response => response.json())
       .then(responseJson => {
-        console.warn(responseJson);
         this.setState({
           status: "fetched",
           response: responseJson
         });
       })
       .catch(error => {
-        console.warn(error);
         this.setState({
           status: "error"
         });
