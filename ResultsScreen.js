@@ -1,11 +1,62 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
+import { fetch } from "fetch";
 
-const ResultsScreen = props => (
-  <View style={styles.container}>
-    <Text>{"Searching for " + props.navigation.getParam("query")}</Text>
-  </View>
-);
+class ResultsScreen extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      status: "fetching",
+      response: null
+    };
+  }
+
+  componentWillMount() {
+    console.warn(this.state);
+    const query = this.props.navigation.getParam("query");
+    console.warn("hiiii " + this.props.navigation.getParam("query"));
+    fetch("http://www.xeno-canto.org/api/2/recordings?query=" + query)
+      .then(response => response.json())
+      .then(responseJson => {
+        console.warn(responseJson);
+        this.setState({
+          status: "fetched",
+          response: responseJson
+        });
+      })
+      .catch(error => {
+        console.warn(error);
+        this.setState({
+          status: "error"
+        });
+      });
+  }
+
+  render() {
+    switch (this.state.status) {
+      case "fetching":
+        return (
+          <View style={styles.container}>
+            <ActivityIndicator size="small" color="#0000ff" />
+          </View>
+        );
+      case "fetched":
+        return (
+          <View style={styles.container}>
+            <Text>Fetched!</Text>
+          </View>
+        );
+      case "error":
+        return (
+          <View style={styles.container}>
+            <Text>Error!</Text>
+          </View>
+        );
+      default:
+        throw "Invalid state";
+    }
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
