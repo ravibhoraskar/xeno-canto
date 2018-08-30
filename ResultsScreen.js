@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  ScrollView,
+  View,
+  ActivityIndicator
+} from "react-native";
 import { fetch } from "fetch";
 
 class ResultsScreen extends React.Component {
@@ -38,9 +44,15 @@ class ResultsScreen extends React.Component {
         );
       case "fetched":
         return (
-          <View style={styles.container}>
-            <Text>Fetched!</Text>
-          </View>
+          <ScrollView>
+            <View style={styles.container}>
+              {this.state.response.recordings.map(recording => (
+                <View key={recording.id}>
+                  <Text>{recording.en}</Text>
+                </View>
+              ))}
+            </View>
+          </ScrollView>
         );
       case "error":
         return (
